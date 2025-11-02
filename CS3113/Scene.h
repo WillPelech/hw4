@@ -19,7 +19,7 @@ struct GameState
 class Scene 
 {
 protected:
-    GameStae mGameState;
+    GameState mGameState;
     Vector2 mOrigin;
     const char *mBGColourHeCode = "#000000";
     

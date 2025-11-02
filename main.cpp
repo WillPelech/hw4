@@ -18,6 +18,7 @@ float gPreviousTicks   = 0.0f,
 Scene *gCurrentScene = nullptr;
 std::vector<Scene*> gLevels = {};
 
+start_screen *gstart_screen = nullptr;
 LevelA *gLevelA = nullptr;
 LevelB *gLevelB = nullptr;
 LevelC *gLevelC = nullptr;
@@ -41,6 +42,7 @@ void initialise()
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Scenes");
     InitAudioDevice();
 
+    gstart_screen = new start_screen(ORIGIN,"#C0897E");
     gLevelA = new LevelA(ORIGIN, "#C0897E");
     gLevelB = new LevelB(ORIGIN, "#011627");
     gLevelC = new LevelB(ORIGIN, "#011627");
