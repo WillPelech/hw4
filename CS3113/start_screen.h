@@ -1,7 +1,5 @@
 #include "Scene.h"
 
-constexpr int LEVEL_WIDTH = 14,
-              LEVEL_HEIGHT = 8;
 class start_screen:public Scene
 {
     public:

@@ -1,10 +1,13 @@
-#include "CS3113"
+#include "cs3113.h"
+#include "Scene.h"
+#include "LevelA.h"
+#include "start_screen.h"
 
 // Global Constants
 constexpr int SCREEN_WIDTH     = 1000,
               SCREEN_HEIGHT    = 600,
               FPS              = 120,
-              NUMBER_OF_LEVELS = 3;
+              NUMBER_OF_LEVELS = 2;
 
 constexpr Vector2 ORIGIN      = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
             
@@ -20,8 +23,6 @@ std::vector<Scene*> gLevels = {};
 
 start_screen *gstart_screen = nullptr;
 LevelA *gLevelA = nullptr;
-LevelB *gLevelB = nullptr;
-LevelC *gLevelC = nullptr;
 
 // Function Declarations
 void switchToScene(Scene *scene);
@@ -42,14 +43,11 @@ void initialise()
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Scenes");
     InitAudioDevice();
 
-    gstart_screen = new start_screen(ORIGIN,"#C0897E");
+    gstart_screen = new start_screen(ORIGIN, "#C0897E", "Press S to Start");
     gLevelA = new LevelA(ORIGIN, "#C0897E");
-    gLevelB = new LevelB(ORIGIN, "#011627");
-    gLevelC = new LevelB(ORIGIN, "#011627");
 
+    gLevels.push_back(gstart_screen);
     gLevels.push_back(gLevelA);
-    gLevels.push_back(gLevelB);
-    gLevels.push_back(gLevelC);
 
     switchToScene(gLevels[0]);
 
@@ -57,7 +55,11 @@ void initialise()
 }
 
 void processInput() 
-{
+{   
+    if (gCurrentScene == gstart_screen){
+        if(IsKeyDown(KEY_S)){switchToScene(gLevels[1]);}
+        return;
+    } 
     gCurrentScene->getState().hero->resetMovement();
 
     if      (IsKeyDown(KEY_A)) gCurrentScene->getState().hero->moveLeft();
@@ -110,9 +112,8 @@ void render()
 
 void shutdown() 
 {
+    delete gstart_screen;
     delete gLevelA;
-    delete gLevelB;
-    delete gLevelB;
 
     for (int i = 0; i < NUMBER_OF_LEVELS; i++) gLevels[i] = nullptr;
 

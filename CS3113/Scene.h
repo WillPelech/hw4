@@ -21,7 +21,7 @@ class Scene
 protected:
     GameState mGameState;
     Vector2 mOrigin;
-    const char *mBGColourHeCode = "#000000";
+    const char *mBGColourHexCode = "#000000";
     
 public:
     Scene();
