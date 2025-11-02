@@ -9,9 +9,9 @@ void LevelA::initialise()
 {
    mGameState.nextSceneID = 0;
 
-   mGameState.bgm = LoadMusicStream("assets/game/04 - Silent Forest.wav");
+   mGameState.bgm = LoadMusicStream("assets/music/DelRioBravo.mp3");
    SetMusicVolume(mGameState.bgm, 0.33f);
-   // PlayMusicStream(gState.bgm);
+   PlayMusicStream(mGameState.bgm);
 
    mGameState.jumpSound = LoadSound("assets/game/Dirt Jump.wav");
 
@@ -23,7 +23,7 @@ void LevelA::initialise()
       (unsigned int *) mLevelData, // grid data
       "assets/game/tilemap.png",   // texture filepath
       TILE_DIMENSION,              // tile size
-      4, 1,                        // texture cols & rows
+      15, 10,                        // texture cols & rows
       mOrigin                      // in-game origin
    );
 
@@ -39,7 +39,6 @@ void LevelA::initialise()
 
    float sizeRatio  = 48.0f / 64.0f;
 
-   // Assets from @see https://sscary.itch.io/the-adventurer-female
    mGameState.hero = new Entity(
       {mOrigin.x - 300.0f, mOrigin.y - 200.0f}, // position
       {250.0f * sizeRatio, 250.0f},             // scale

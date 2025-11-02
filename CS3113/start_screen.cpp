@@ -13,9 +13,9 @@ void start_screen::initialise()
 {
    mGameState.nextSceneID = 0;
 
-   mGameState.bgm = LoadMusicStream("assets/music/The Entertainer.mp3");
+   mGameState.bgm = LoadMusicStream("assets/music/TheEntertainer.mp3");
    SetMusicVolume(mGameState.bgm, 0.33f);
-    PlayMusicStream(gState.bgm);
+   PlayMusicStream(mGameState.bgm);
 
    float sizeRatio  = 48.0f / 64.0f;
 }
@@ -40,7 +40,6 @@ void start_screen::render()
 
 void start_screen::shutdown()
 {
-
+   StopMusicStream(mGameState.bgm);
    UnloadMusicStream(mGameState.bgm);
-   UnloadSound(mGameState.jumpSound);
 }
