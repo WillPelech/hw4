@@ -13,7 +13,7 @@ void LevelA::initialise()
    SetMusicVolume(mGameState.bgm, 0.33f);
    PlayMusicStream(mGameState.bgm);
 
-   mGameState.jumpSound = LoadSound("assets/game/Dirt Jump.wav");
+   //mGameState.jumpSound = LoadSound("assets/game/Dirt Jump.wav");
 
    /*
       ----------- MAP -----------
@@ -21,7 +21,7 @@ void LevelA::initialise()
    mGameState.map = new Map(
       LEVEL_WIDTH, LEVEL_HEIGHT,   // map grid cols & rows
       (unsigned int *) mLevelData, // grid data
-      "assets/game/tilemap.png",   // texture filepath
+      "assets/tilemap.png",   // texture filepath
       TILE_DIMENSION,              // tile size
       15, 10,                        // texture cols & rows
       mOrigin                      // in-game origin
@@ -31,20 +31,20 @@ void LevelA::initialise()
       ----------- PROTAGONIST -----------
    */
    std::map<Direction, std::vector<int>> heroAnimationAtlas = {
-      {DOWN,  {  0,  1,  2,  3,  4,  5,  6,  7 }},
-      {LEFT,  {  8,  9, 10, 11, 12, 13, 14, 15 }},
-      {UP,    { 24, 25, 26, 27, 28, 29, 30, 31 }},
-      {RIGHT, { 40, 41, 42, 43, 44, 45, 46, 47 }},
+      {DOWN,  { 93,93 }},
+      {LEFT,  { 90,90}},
+      {UP,    { 92,92 }},
+      {RIGHT, { 91,91}},
    };
 
    float sizeRatio  = 48.0f / 64.0f;
 
    mGameState.hero = new Entity(
       {mOrigin.x - 300.0f, mOrigin.y - 200.0f}, // position
-      {250.0f * sizeRatio, 250.0f},             // scale
-      "assets/game/walk.png",                   // texture file address
+      {50.0f * sizeRatio, 50.0f},             // scale
+      "assets/tilemap.png",                   // texture file address
       ATLAS,                                    // single image or atlas?
-      { 6, 8 },                                 // atlas dimensions
+      {10, 15 },                                 // atlas dimensions
       heroAnimationAtlas,                    // actual atlas
       PLAYER                                    // entity type
    );

@@ -22,7 +22,7 @@ Scene *gCurrentScene = nullptr;
 std::vector<Scene*> gLevels = {};
 
 start_screen *gstart_screen = nullptr;
-LevelA *gLevelA = nullptr;
+LevelA *gLevelA = nullptr ;
 
 // Function Declarations
 void switchToScene(Scene *scene);
