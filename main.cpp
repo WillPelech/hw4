@@ -8,7 +8,7 @@ constexpr int SCREEN_WIDTH     = 1000,
               SCREEN_HEIGHT    = 600,
               FPS              = 120,
               NUMBER_OF_LEVELS = 2;
-
+//make the camera follow the character
 constexpr Vector2 ORIGIN      = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
             
 constexpr float FIXED_TIMESTEP = 1.0f / 60.0f;
@@ -45,6 +45,8 @@ void initialise()
 
     gstart_screen = new start_screen(ORIGIN, "#C0897E", "Press S to Start");
     gLevelA = new LevelA(ORIGIN, "#C0897E");
+    // gLevelB = new LevelB(ORIGIN, "#C0897E");
+    // gLevelC = new LevelC(ORIGIN, "#C0897E");
 
     gLevels.push_back(gstart_screen);
     gLevels.push_back(gLevelA);
@@ -114,6 +116,8 @@ void shutdown()
 {
     delete gstart_screen;
     delete gLevelA;
+    // delete gLevelB;
+    // delete gLevelC;
 
     for (int i = 0; i < NUMBER_OF_LEVELS; i++) gLevels[i] = nullptr;
 

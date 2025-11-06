@@ -48,7 +48,7 @@ void Map::render()
             int tile = mLevelData[row * mMapColumns + col];
 
             // If the tile index is 0, we do not draw anything
-            if (tile == 0) continue;
+            //if (tile == 0) continue;
 
             Rectangle destinationArea = {
                 mLeftBoundary + col * mTileSize,

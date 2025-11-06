@@ -31,24 +31,40 @@ void LevelA::initialise()
       ----------- PROTAGONIST -----------
    */
    std::map<Direction, std::vector<int>> heroAnimationAtlas = {
-      {DOWN,  { 93,93 }},
-      {LEFT,  { 90,90}},
-      {UP,    { 92,92 }},
-      {RIGHT, { 91,91}},
+      {DOWN,  { 0,1,2,3,4,5,6}},
+      {LEFT,  { 0,1,2,3,4,5,6}},
+      {UP,    { 0,1,2,3,4,5,6 }},
+      {RIGHT, { 0,1,2,3,4,5,6}},
    };
-
-   float sizeRatio  = 48.0f / 64.0f;
+   std::map<Direction, std::vector<int>> vultureAnimationAtlas = {
+      {DOWN,  { 0,1,2,3}},
+      {LEFT,  { 0,1,2,3}},
+      {UP,    { 0,1,2,3}},
+      {RIGHT, { 0,1,2,3}},
+   };
+   float sizeRatio  = 50.0f / 64.0f;
 
    mGameState.hero = new Entity(
       {mOrigin.x - 300.0f, mOrigin.y - 200.0f}, // position
       {50.0f * sizeRatio, 50.0f},             // scale
-      "assets/tilemap.png",                   // texture file address
+      "assets/owlet/Owlet_Monster_Walk_6.png",                   // texture file address
       ATLAS,                                    // single image or atlas?
-      {10, 15 },                                 // atlas dimensions
+      {1, 6},                                 // atlas dimensions
       heroAnimationAtlas,                    // actual atlas
       PLAYER                                    // entity type
    );
 
+   flying_enemy =  new Entity(
+      {mOrigin.x + 300.0f, mOrigin.y - 200.0f}, // position
+      {50.0f , 50.0f*sizeRatio},             // scale
+      "assets/4 Vulture/Vulture_walk.png",                   // texture file address
+      ATLAS,                                    // single image or atlas?
+      {1, 4},                                 // atlas dimensions
+      vultureAnimationAtlas,                    // actual atlas
+      NPC                                    // entity type
+   );
+   flying_enemy->setAIType(FOLLOWER);
+   flying_enemy->setAIState(IDLE); 
    mGameState.hero->setJumpingPower(550.0f);
    mGameState.hero->setColliderDimensions({
       mGameState.hero->getScale().x / 3.5f,
@@ -77,6 +93,13 @@ void LevelA::update(float deltaTime)
       nullptr,        // collidable entities
       0               // col. entity count
    );
+   flying_enemy->update(
+      deltaTime,
+      mGameState.hero,
+      mGameState.map,
+      nullptr,
+      0
+      );
 
    Vector2 currentPlayerPosition = { mGameState.hero->getPosition().x, mOrigin.y };
 
@@ -89,8 +112,9 @@ void LevelA::render()
 {
    ClearBackground(ColorFromHex(mBGColourHexCode));
 
-   mGameState.hero->render();
    mGameState.map->render();
+   mGameState.hero->render();
+   flying_enemy->render();
 }
 
 void LevelA::shutdown()
