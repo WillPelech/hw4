@@ -24,8 +24,10 @@ void game_won::update(float deltaTime)
 {
    UpdateMusicStream(mGameState.bgm);
     
-
-
+   if (IsKeyPressed(KEY_S))
+   {
+      mGameState.nextSceneID = 6;
+   }
 }
 
 void game_won::render()

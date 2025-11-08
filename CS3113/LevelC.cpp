@@ -13,7 +13,9 @@ void LevelC::initialise()
    SetMusicVolume(mGameState.bgm, 0.33f);
    PlayMusicStream(mGameState.bgm);
 
-   //mGameState.jumpSound = LoadSound("assets/game/Dirt Jump.wav");
+   mGameState.jumpSound = LoadSound("assets/mario.mp3");
+   mGameState.hitSound = LoadSound("assets/hit.mp3");
+   mGameState.keySound = LoadSound("assets/coin.mp3");
 
    /*
       ----------- MAP -----------
@@ -165,6 +167,9 @@ void LevelC::initialise()
    mGameState.camera.offset = mOrigin;                           // camera offset to center of screen
    mGameState.camera.rotation = 0.0f;                            // no rotation
    mGameState.camera.zoom = 1.0f;                                // default zoom
+   
+   mGameState.prevLives = mGameState.hero->getLives();
+   mGameState.prevHasKey = mGameState.hero->get_key();
 }
 
 void LevelC::update(float deltaTime)
@@ -215,6 +220,16 @@ void LevelC::update(float deltaTime)
       mGameState.hero->remove_key();
       mGameState.nextSceneID = 5;
    } 
+   
+   if (mGameState.hero->getLives() < mGameState.prevLives) {
+      PlaySound(mGameState.hitSound);
+   }
+   if (!mGameState.prevHasKey && mGameState.hero->get_key()) {
+      PlaySound(mGameState.keySound);
+   }
+   mGameState.prevLives = mGameState.hero->getLives();
+   mGameState.prevHasKey = mGameState.hero->get_key();
+   
    if (mGameState.hero->getLives() == 0){
       mGameState.nextSceneID = 4;
    }
@@ -247,4 +262,6 @@ void LevelC::shutdown()
 
    UnloadMusicStream(mGameState.bgm);
    UnloadSound(mGameState.jumpSound);
+   UnloadSound(mGameState.hitSound);
+   UnloadSound(mGameState.keySound);
 }

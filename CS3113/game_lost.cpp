@@ -23,9 +23,11 @@ void game_lost::initialise()
 void game_lost::update(float deltaTime)
 {
    UpdateMusicStream(mGameState.bgm);
-    
-
-
+   
+   if (IsKeyPressed(KEY_S))
+   {
+      mGameState.nextSceneID = 6;
+   }
 }
 
 void game_lost::render()

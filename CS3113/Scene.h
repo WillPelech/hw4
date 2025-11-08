@@ -10,6 +10,11 @@ struct GameState
 
     Music bgm;
     Sound jumpSound;
+    Sound hitSound;
+    Sound keySound;
+
+    int  prevLives;
+    bool prevHasKey;
 
     Camera2D camera;
 

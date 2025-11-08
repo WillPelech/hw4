@@ -94,6 +94,7 @@ void processInput()
         gCurrentScene->getState().hero->isCollidingBottom())
     {
         gCurrentScene->getState().hero->jump();
+        PlaySound(gCurrentScene->getState().jumpSound);
     }
 
     if (GetLength(gCurrentScene->getState().hero->getMovement()) > 1.0f) 
