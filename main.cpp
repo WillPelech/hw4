@@ -2,13 +2,15 @@
 #include "Scene.h"
 #include "LevelA.h"
 #include "LevelB.h"
+#include "LevelC.h"
 #include "start_screen.h"
-
+#include "game_lost.h"
+#include "game_won.h"
 // Global Constants
 constexpr int SCREEN_WIDTH     = 1000,
               SCREEN_HEIGHT    = 600,
               FPS              = 120,
-              NUMBER_OF_LEVELS = 3;
+              NUMBER_OF_LEVELS = 6;
 //make the camera follow the character
 constexpr Vector2 ORIGIN      = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
             
@@ -25,7 +27,9 @@ std::vector<Scene*> gLevels = {};
 start_screen *gstart_screen = nullptr;
 LevelA *gLevelA = nullptr ;
 LevelB *gLevelB = nullptr ;
-
+LevelC *gLevelC = nullptr ;
+game_lost *ggame_lost = nullptr;
+game_won *ggame_won = nullptr;
 // Function Declarations
 void switchToScene(Scene *scene);
 void initialise();
@@ -48,12 +52,17 @@ void initialise()
     gstart_screen = new start_screen(ORIGIN, "#C0897E", "Press S to Start");
     gLevelA = new LevelA(ORIGIN, "#C0897E");
     gLevelB = new LevelB(ORIGIN, "#C0897E");
+    gLevelC = new LevelC(ORIGIN, "#C0897E");
+    ggame_lost= new game_lost(ORIGIN, "#000000", "GAME OVER");
+    ggame_won = new game_won(ORIGIN, "#000000", "GAME WON");
     // gLevelC = new LevelC(ORIGIN, "#C0897E");
 
     gLevels.push_back(gstart_screen);
     gLevels.push_back(gLevelA);
     gLevels.push_back(gLevelB);
-
+    gLevels.push_back(gLevelC);
+    gLevels.push_back(ggame_lost);
+    gLevels.push_back(ggame_won);
     switchToScene(gLevels[0]);
 
     SetTargetFPS(FPS);
@@ -61,10 +70,16 @@ void initialise()
 
 void processInput() 
 {   
+    // Always allow quitting regardless of scene type
+    if (IsKeyPressed(KEY_Q) || WindowShouldClose()) { gAppStatus = TERMINATED; return; }
+
     if (gCurrentScene == gstart_screen){
         if(IsKeyDown(KEY_S)){switchToScene(gLevels[1]);}
         return;
     } 
+    // Some scenes (e.g., game_lost) have no hero; skip player input in that case
+    if (gCurrentScene->getState().hero == nullptr) return;
+
     gCurrentScene->getState().hero->resetMovement();
 
     if      (IsKeyDown(KEY_A)) gCurrentScene->getState().hero->moveLeft();
@@ -74,13 +89,11 @@ void processInput()
         gCurrentScene->getState().hero->isCollidingBottom())
     {
         gCurrentScene->getState().hero->jump();
-        PlaySound(gCurrentScene->getState().jumpSound);
     }
 
     if (GetLength(gCurrentScene->getState().hero->getMovement()) > 1.0f) 
         gCurrentScene->getState().hero->normaliseMovement();
-
-    if (IsKeyPressed(KEY_Q) || WindowShouldClose()) gAppStatus = TERMINATED;
+    
 }
 
 void update() 
@@ -120,6 +133,9 @@ void shutdown()
     delete gstart_screen;
     delete gLevelA;
     delete gLevelB;
+    delete gLevelC;
+    delete ggame_lost;
+    delete ggame_won;
     // delete gLevelC;
 
     for (int i = 0; i < NUMBER_OF_LEVELS; i++) gLevels[i] = nullptr;
@@ -140,7 +156,16 @@ int main(void)
         if (gCurrentScene->getState().nextSceneID > 0)
         {
             int id = gCurrentScene->getState().nextSceneID;
-            switchToScene(gLevels[id]);
+            if (id >= 0 && id < (int)gLevels.size() && gLevels[id] != nullptr) {
+                int carriedLives = -1;
+                if (gCurrentScene->getState().hero != nullptr) {
+                    carriedLives = gCurrentScene->getState().hero->getLives();
+                }
+                switchToScene(gLevels[id]);
+                if (carriedLives >= 0 && gCurrentScene->getState().hero != nullptr) {
+                    gCurrentScene->getState().hero->setLives(carriedLives);
+                }
+            }
         }
 
         render();

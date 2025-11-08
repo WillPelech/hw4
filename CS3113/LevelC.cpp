@@ -1,11 +1,11 @@
-#include "LevelA.h"
+#include "LevelC.h"
 
-LevelA::LevelA()                                      : Scene { {0.0f}, nullptr   } {}
-LevelA::LevelA(Vector2 origin, const char *bgHexCode) : Scene { origin, bgHexCode } {}
+LevelC::LevelC()                                      : Scene { {0.0f}, nullptr   } {}
+LevelC::LevelC(Vector2 origin, const char *bgHexCode) : Scene { origin, bgHexCode } {}
 
-LevelA::~LevelA() { shutdown(); }
+LevelC::~LevelC() { shutdown(); }
 
-void LevelA::initialise()
+void LevelC::initialise()
 {
    mGameState.nextSceneID = 0;
 
@@ -18,8 +18,45 @@ void LevelA::initialise()
    /*
       ----------- MAP -----------
    */
+   const unsigned int layoutA[LEVEL_WIDTH3 * LEVEL_HEIGHT3] = {
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,4,
+   };
+   const unsigned int layoutB[LEVEL_WIDTH3 * LEVEL_HEIGHT3] = {
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0,4,
+      0,4, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0,4,
+      0,4, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0,4,
+      0,4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,4,
+   };
+   const unsigned int layoutC[LEVEL_WIDTH3 * LEVEL_HEIGHT3] = {
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 0,4,
+      0,4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0,4,
+      0,4, 0, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0,4,
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,4,
+      0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+      0,4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,4,
+   };
+
+   int pick = GetRandomValue(0, 2);
+   const unsigned int *chosen = (pick == 0) ? layoutA : (pick == 1) ? layoutB : layoutC;
+   for (int i = 0; i < LEVEL_WIDTH3 * LEVEL_HEIGHT3; ++i) {
+      mLevelData[i] = chosen[i];
+   }
+
    mGameState.map = new Map(
-      LEVEL_WIDTH, LEVEL_HEIGHT,   // map grid cols & rows
+      LEVEL_WIDTH3, LEVEL_HEIGHT3,   // map grid cols & rows
       (unsigned int *) mLevelData, // grid data
       "assets/tilemap_packed.png",   // texture filepath
       TILE_DIMENSION,              // tile size
@@ -42,6 +79,13 @@ void LevelA::initialise()
       {UP,    { 0,1,2,3}},
       {RIGHT, { 0,1,2,3}},
    };
+      std::map<Direction, std::vector<int>> hyenaAnimationAtlas = {
+      {DOWN,  { 0,1,2,3,4,5}},
+      {LEFT,  { 0,1,2,3,4,5}},
+      {UP,    { 0,1,2,3,4,5}},
+      {RIGHT, { 0,1,2,3,4,5}},
+   };
+ 
    float sizeRatio  = 50.0f / 64.0f;
 
    mGameState.hero = new Entity(
@@ -54,8 +98,8 @@ void LevelA::initialise()
       PLAYER                                    // entity type
    );
 
-   flying_enemy =  new Entity(
-      {mOrigin.x + 300.0f, mOrigin.y - 200.0f}, // position
+   ground_enemy1=  new Entity(
+      {mOrigin.x + 300.0f, mOrigin.y - 100.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
       "assets/4 Vulture/Vulture_walk.png",                   // texture file address
       ATLAS,                                    // single image or atlas?
@@ -63,23 +107,49 @@ void LevelA::initialise()
       vultureAnimationAtlas,                    // actual atlas
       NPC                                      // entity type
    );
-   
+   ground_enemy2=  new Entity(
+      {mOrigin.x + 200.0f, mOrigin.y + 200.0f}, // position
+      {50.0f , 50.0f*sizeRatio},             // scale
+      "assets/3 Scorpio/Scorpio_walk.png",                   // texture file address
+      ATLAS,                                    // single image or atlas?
+      {1, 4},                                 // atlas dimensions
+      vultureAnimationAtlas,                    // actual atlas
+      NPC                                      // entity type
+   );
+   jumper_enemy=  new Entity(
+      {mOrigin.x , mOrigin.y + 200.0f}, // position
+      {50.0f , 50.0f*sizeRatio},             // scale
+      "assets/2 Hyena/Hyena_walk.png",                   // texture file address
+      ATLAS,                                    // single image or atlas?
+      {1, 6},                                 // atlas dimensions
+      hyenaAnimationAtlas,                    // actual atlas
+      NPC                                      // ejntity type
+   );
    key = new Entity(
-      {mOrigin.x + 300.0f, mOrigin.y -20.0f}, // position
+      {mOrigin.x + 350.0f, mOrigin.y -100.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
       "assets/tile_0066.png",                   // texture file address
       KEY 
    );
    door = new Entity(
-      {mOrigin.x - 300.0f, mOrigin.y +50.0f}, // position
+      {mOrigin.x - 350.0f, mOrigin.y +50.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
       "assets/tile_0067.png",                   // texture file address
       DOOR  
    );
    
-   flying_enemy->setAIType(FOLLOWER);
-   flying_enemy->setAIState(IDLE); 
-
+   ground_enemy1->setAIType(WANDERER);
+   ground_enemy1->setAIState(IDLE); 
+   ground_enemy2->setAIType(WANDERER);
+   ground_enemy2->setAIState(IDLE); 
+   jumper_enemy->setAIType(JUMPER);
+   jumper_enemy->setAIState(IDLE); 
+   jumper_enemy->setColliderDimensions({
+      jumper_enemy->getScale().x ,
+      jumper_enemy->getScale().y 
+   });
+   jumper_enemy->setAcceleration({0.0f, ACCELERATION_OF_GRAVITY});
+   jumper_enemy->setJumpingPower(550.0f);
    mGameState.hero->setJumpingPower(550.0f);
    mGameState.hero->setColliderDimensions({
       mGameState.hero->getScale().x ,
@@ -97,7 +167,7 @@ void LevelA::initialise()
    mGameState.camera.zoom = 1.0f;                                // default zoom
 }
 
-void LevelA::update(float deltaTime)
+void LevelC::update(float deltaTime)
 {
    UpdateMusicStream(mGameState.bgm);
 
@@ -108,7 +178,21 @@ void LevelA::update(float deltaTime)
       nullptr,        // collidable entities
       0               // col. entity count
    );
-   flying_enemy->update(
+   ground_enemy1->update(
+      deltaTime,
+      mGameState.hero,
+      mGameState.map,
+      nullptr,
+      0
+   );
+   ground_enemy2->update(
+      deltaTime,
+      mGameState.hero,
+      mGameState.map,
+      nullptr,
+      0
+   );
+   jumper_enemy->update(
       deltaTime,
       mGameState.hero,
       mGameState.map,
@@ -129,12 +213,12 @@ void LevelA::update(float deltaTime)
     0);   
    if (door->getActive()==INACTIVE &&mGameState.hero->get_key()){
       mGameState.hero->remove_key();
-      mGameState.nextSceneID = 2;
+      mGameState.nextSceneID = 5;
    } 
-
    if (mGameState.hero->getLives() == 0){
       mGameState.nextSceneID = 4;
    }
+
 
    Vector2 currentPlayerPosition = { mGameState.hero->getPosition().x, mOrigin.y };
 
@@ -143,18 +227,20 @@ void LevelA::update(float deltaTime)
    panCamera(&mGameState.camera, &currentPlayerPosition);
 }
 
-void LevelA::render()
+void LevelC::render()
 {
    ClearBackground(ColorFromHex(mBGColourHexCode));
 
    mGameState.map->render();
    mGameState.hero->render();
-   flying_enemy->render();
+   ground_enemy1->render();
+   ground_enemy2->render();
+   jumper_enemy->render();
    key->render();
    door->render();
 }
 
-void LevelA::shutdown()
+void LevelC::shutdown()
 {
    delete mGameState.hero;
    delete mGameState.map;

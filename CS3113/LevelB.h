@@ -19,7 +19,8 @@ public:
     static constexpr float TILE_DIMENSION       = 75.0f,
                         ACCELERATION_OF_GRAVITY = 981.0f,
                         END_GAME_THRESHOLD      = 800.0f;
-    Entity * ground_enemy;
+    Entity * ground_enemy1;
+    Entity * ground_enemy2;
     Entity * key;
     Entity * door;
     LevelB();

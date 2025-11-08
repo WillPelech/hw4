@@ -13,7 +13,7 @@ void LevelB::initialise()
    SetMusicVolume(mGameState.bgm, 0.33f);
    PlayMusicStream(mGameState.bgm);
 
-   //mGameState.jumpSound = LoadSound("assets/game/Dirt Jump.wav");
+   mGameState.jumpSound = LoadSound("assets/game/Dirt Jump.wav");
 
    /*
       ----------- MAP -----------
@@ -54,8 +54,8 @@ void LevelB::initialise()
       PLAYER                                    // entity type
    );
 
-   ground_enemy =  new Entity(
-      {mOrigin.x + 300.0f, mOrigin.y - 200.0f}, // position
+   ground_enemy1=  new Entity(
+      {mOrigin.x + 300.0f, mOrigin.y - 100.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
       "assets/3 Scorpio/Scorpio_walk.png",                   // texture file address
       ATLAS,                                    // single image or atlas?
@@ -63,23 +63,32 @@ void LevelB::initialise()
       vultureAnimationAtlas,                    // actual atlas
       NPC                                      // entity type
    );
-   
+   ground_enemy2=  new Entity(
+      {mOrigin.x + 300.0f, mOrigin.y + 200.0f}, // position
+      {50.0f , 50.0f*sizeRatio},             // scale
+      "assets/3 Scorpio/Scorpio_walk.png",                   // texture file address
+      ATLAS,                                    // single image or atlas?
+      {1, 4},                                 // atlas dimensions
+      vultureAnimationAtlas,                    // actual atlas
+      NPC                                      // entity type
+   );
    key = new Entity(
-      {mOrigin.x + 300.0f, mOrigin.y -20.0f}, // position
+      {mOrigin.x + 300.0f, mOrigin.y -100.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
       "assets/tile_0066.png",                   // texture file address
       KEY 
    );
    door = new Entity(
-      {mOrigin.x - 300.0f, mOrigin.y +50.0f}, // position
+      {mOrigin.x - 300.0f, mOrigin.y +200.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
       "assets/tile_0067.png",                   // texture file address
       DOOR  
    );
    
-   ground_enemy->setAIType(WANDERER);
-   ground_enemy->setAIState(IDLE); 
-
+   ground_enemy1->setAIType(WANDERER);
+   ground_enemy1->setAIState(IDLE); 
+   ground_enemy2->setAIType(WANDERER);
+   ground_enemy2->setAIState(IDLE); 
    mGameState.hero->setJumpingPower(550.0f);
    mGameState.hero->setColliderDimensions({
       mGameState.hero->getScale().x ,
@@ -108,7 +117,14 @@ void LevelB::update(float deltaTime)
       nullptr,        // collidable entities
       0               // col. entity count
    );
-   ground_enemy->update(
+   ground_enemy1->update(
+      deltaTime,
+      mGameState.hero,
+      mGameState.map,
+      nullptr,
+      0
+   );
+   ground_enemy2->update(
       deltaTime,
       mGameState.hero,
       mGameState.map,
@@ -129,11 +145,13 @@ void LevelB::update(float deltaTime)
     0);   
    if (door->getActive()==INACTIVE &&mGameState.hero->get_key()){
       mGameState.hero->remove_key();
-      mGameState.nextSceneID = 1;
+      mGameState.nextSceneID = 3;
    } 
 
    
-   
+   if (mGameState.hero->getLives() == 0){
+      mGameState.nextSceneID = 4;
+   }
 
    Vector2 currentPlayerPosition = { mGameState.hero->getPosition().x, mOrigin.y };
 
@@ -148,7 +166,8 @@ void LevelB::render()
 
    mGameState.map->render();
    mGameState.hero->render();
-   ground_enemy->render();
+   ground_enemy1->render();
+   ground_enemy2->render();
    key->render();
    door->render();
 }

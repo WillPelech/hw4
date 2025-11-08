@@ -6,8 +6,8 @@
 enum Direction    { LEFT, UP, RIGHT, DOWN              }; // For walking
 enum EntityStatus { ACTIVE, INACTIVE                   };
 enum EntityType   { PLAYER, BLOCK, PLATFORM, NPC, KEY,DOOR,NONE };
-enum AIType       { WANDERER, FOLLOWER                 };
-enum AIState      { WALKING, IDLE, FOLLOWING           };
+enum AIType       { WANDERER, FOLLOWER, JUMPER                 };
+enum AIState      { WALKING, IDLE, FOLLOWING, JUMPING           };
 class Entity
 {
 private:
@@ -75,6 +75,7 @@ private:
     void AIActivate(Entity *target);
     void AIWander();
     void AIFollow(Entity *target);
+    void AIJump(Entity *target);
 
 public:
     static constexpr int   DEFAULT_SIZE          = 250;
@@ -170,6 +171,8 @@ public:
         { mAIState = newState;                     }
     void setAIType(AIType newType)
         { mAIType = newType;                       }
+    int  getLives() const { return mLives; }
+    void setLives(int lives) { mLives = lives; }
     void lose_life(){
         mLives -=1;
     }

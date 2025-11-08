@@ -261,8 +261,28 @@ void Entity::AIActivate(Entity *target)
     case FOLLOWER:
         AIFollow(target);
         break;
+    case JUMPER:
+        AIJump(target);
+        break;
     
     default:
+        break;
+    }
+}
+
+void Entity::AIJump(Entity *target)
+{
+    switch (mAIState)
+    {
+    case IDLE:
+        mAIState = JUMPING;
+        break;
+    case JUMPING:
+    default:
+        resetMovement();
+        if (mIsCollidingBottom) {
+            mIsJumping = true;
+        }
         break;
     }
 }
