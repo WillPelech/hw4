@@ -31,10 +31,17 @@ void start_screen::update(float deltaTime)
 void start_screen::render()
 {
    ClearBackground(ColorFromHex(mBGColourHexCode));
-   int fontSize = 40;
+   int titleSize = 50;
+   const char* title = "Escape the Desert";
+   int titleWidth = MeasureText(title, titleSize);
+   int titleX = static_cast<int>(mOrigin.x - titleWidth / 2);
+   int titleY = static_cast<int>(mOrigin.y) - 120;
+   DrawText(title, titleX, titleY, titleSize, BLACK);
+
+   int fontSize = 32;
    int textWidth = MeasureText(start_text.c_str(), fontSize);
-   int x = (GetScreenWidth() - textWidth) / 2;
-   int y = (GetScreenHeight() - fontSize) / 2;
+   int x = static_cast<int>(mOrigin.x - textWidth / 2);
+   int y = titleY + titleSize + 24;
    DrawText(start_text.c_str(), x, y, fontSize, BLACK);
 }
 

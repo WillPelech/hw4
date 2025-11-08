@@ -391,7 +391,7 @@ void Entity::render()
     if(mEntityType == PLAYER){
         if (mLives ==3){
         Rectangle threeArea= {
-            100,150,50,50
+            100,50,50,50
         };
         heartArea = {
                 // top-left corner
@@ -411,7 +411,7 @@ void Entity::render()
     }
         if (mLives >=2){
         Rectangle twoArea= {
-            150,150,50,50
+            150,50,50,50
         };
         heartArea = {
                 // top-left corner
@@ -431,7 +431,7 @@ void Entity::render()
     }
     if (mLives >=1){
         Rectangle oneArea= {
-            200,150,50,50
+            200,50,50,50
         };
         heartArea = {
                 // top-left corner

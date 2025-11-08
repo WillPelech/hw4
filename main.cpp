@@ -5,12 +5,13 @@
 #include "LevelC.h"
 #include "start_screen.h"
 #include "game_lost.h"
+#include "start_menu.h"
 #include "game_won.h"
 // Global Constants
 constexpr int SCREEN_WIDTH     = 1000,
               SCREEN_HEIGHT    = 600,
               FPS              = 120,
-              NUMBER_OF_LEVELS = 6;
+              NUMBER_OF_LEVELS = 7;
 //make the camera follow the character
 constexpr Vector2 ORIGIN      = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
             
@@ -25,6 +26,7 @@ Scene *gCurrentScene = nullptr;
 std::vector<Scene*> gLevels = {};
 
 start_screen *gstart_screen = nullptr;
+start_menu *gstart_menu = nullptr;
 LevelA *gLevelA = nullptr ;
 LevelB *gLevelB = nullptr ;
 LevelC *gLevelC = nullptr ;
@@ -49,7 +51,8 @@ void initialise()
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Scenes");
     InitAudioDevice();
 
-    gstart_screen = new start_screen(ORIGIN, "#C0897E", "Press S to Start");
+    gstart_screen = new start_screen(ORIGIN, "#C0897E", "Press S to Start  |  Press M for Menu");
+    gstart_menu = new start_menu(ORIGIN, "#C0897E");
     gLevelA = new LevelA(ORIGIN, "#C0897E");
     gLevelB = new LevelB(ORIGIN, "#C0897E");
     gLevelC = new LevelC(ORIGIN, "#C0897E");
@@ -63,6 +66,7 @@ void initialise()
     gLevels.push_back(gLevelC);
     gLevels.push_back(ggame_lost);
     gLevels.push_back(ggame_won);
+    gLevels.push_back(gstart_menu);
     switchToScene(gLevels[0]);
 
     SetTargetFPS(FPS);
@@ -70,11 +74,12 @@ void initialise()
 
 void processInput() 
 {   
-    // Always allow quitting regardless of scene type
+
     if (IsKeyPressed(KEY_Q) || WindowShouldClose()) { gAppStatus = TERMINATED; return; }
 
     if (gCurrentScene == gstart_screen){
         if(IsKeyDown(KEY_S)){switchToScene(gLevels[1]);}
+        if(IsKeyPressed(KEY_M)){switchToScene(gLevels[6]);}
         return;
     } 
     // Some scenes (e.g., game_lost) have no hero; skip player input in that case
