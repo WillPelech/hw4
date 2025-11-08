@@ -214,7 +214,6 @@ void Entity::AIWander()
         break;
     case WALKING:
     default:
-        // Flip direction when we hit a wall last frame, otherwise keep going
         if (mIsCollidingLeft) {
             moveRight();
         } else if (mIsCollidingRight) {
@@ -394,10 +393,7 @@ void Entity::render()
             100,50,50,50
         };
         heartArea = {
-                // top-left corner
                 0.0f, 0.0f,
-
-                // bottom-right corner (of texture)
                 static_cast<float>(mHeart.width),
                 static_cast<float>(mHeart.height)
             };
@@ -414,10 +410,7 @@ void Entity::render()
             150,50,50,50
         };
         heartArea = {
-                // top-left corner
                 0.0f, 0.0f,
-
-                // bottom-right corner (of texture)
                 static_cast<float>(mHeart.width),
                 static_cast<float>(mHeart.height)
             };
@@ -434,10 +427,7 @@ void Entity::render()
             200,50,50,50
         };
         heartArea = {
-                // top-left corner
                 0.0f, 0.0f,
-
-                // bottom-right corner (of texture)
                 static_cast<float>(mHeart.width),
                 static_cast<float>(mHeart.height)
             };

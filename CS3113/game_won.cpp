@@ -33,8 +33,8 @@ void game_won::render()
    ClearBackground(ColorFromHex(mBGColourHexCode));
    int fontSize = 40;
    int textWidth = MeasureText(start_text.c_str(), fontSize);
-   int x = (GetScreenWidth() - textWidth) / 2;
-   int y = (GetScreenHeight() - fontSize) / 2;
+   int x = (1000 - textWidth) / 2;
+   int y = (600 - fontSize) / 2;
    DrawText(start_text.c_str(), x, y, fontSize,GREEN);
 }
 
