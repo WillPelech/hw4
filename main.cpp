@@ -1,13 +1,14 @@
 #include "cs3113.h"
 #include "Scene.h"
 #include "LevelA.h"
+#include "LevelB.h"
 #include "start_screen.h"
 
 // Global Constants
 constexpr int SCREEN_WIDTH     = 1000,
               SCREEN_HEIGHT    = 600,
               FPS              = 120,
-              NUMBER_OF_LEVELS = 2;
+              NUMBER_OF_LEVELS = 3;
 //make the camera follow the character
 constexpr Vector2 ORIGIN      = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
             
@@ -23,6 +24,7 @@ std::vector<Scene*> gLevels = {};
 
 start_screen *gstart_screen = nullptr;
 LevelA *gLevelA = nullptr ;
+LevelB *gLevelB = nullptr ;
 
 // Function Declarations
 void switchToScene(Scene *scene);
@@ -45,11 +47,12 @@ void initialise()
 
     gstart_screen = new start_screen(ORIGIN, "#C0897E", "Press S to Start");
     gLevelA = new LevelA(ORIGIN, "#C0897E");
-    // gLevelB = new LevelB(ORIGIN, "#C0897E");
+    gLevelB = new LevelB(ORIGIN, "#C0897E");
     // gLevelC = new LevelC(ORIGIN, "#C0897E");
 
     gLevels.push_back(gstart_screen);
     gLevels.push_back(gLevelA);
+    gLevels.push_back(gLevelB);
 
     switchToScene(gLevels[0]);
 
@@ -116,7 +119,7 @@ void shutdown()
 {
     delete gstart_screen;
     delete gLevelA;
-    // delete gLevelB;
+    delete gLevelB;
     // delete gLevelC;
 
     for (int i = 0; i < NUMBER_OF_LEVELS; i++) gLevels[i] = nullptr;

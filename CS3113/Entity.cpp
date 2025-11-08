@@ -26,10 +26,12 @@ Entity::Entity(Vector2 position, Vector2 scale, const char *textureFilepath,
         mTextureType {ATLAS}, mSpriteSheetDimensions {spriteSheetDimensions},
         mAnimationAtlas {animationAtlas}, mDirection {RIGHT},
         mAnimationIndices {animationAtlas.at(RIGHT)}, 
-        mFrameSpeed {DEFAULT_FRAME_SPEED}, mAngle { 0.0f }, 
+        mFrameSpeed {DEFAULT_FRAME_SPEED}, mAngle { 0.0f }, spawn_in_position{position}, 
         mSpeed { DEFAULT_SPEED }, mEntityType {entityType} { }
 
-Entity::~Entity() { UnloadTexture(mTexture); };
+Entity::~Entity() { UnloadTexture(mTexture); 
+UnloadTexture(mHeart);
+};
 
 void Entity::checkCollisionY(Entity *collidableEntities, int collisionCheckCount)
 {
@@ -202,7 +204,28 @@ void Entity::animate(float deltaTime)
     }
 }
 
-void Entity::AIWander() { moveLeft(); }
+void Entity::AIWander()
+{
+    switch (mAIState)
+    {
+    case IDLE:
+        // Begin walking using current facing direction
+        mAIState = WALKING;
+        break;
+    case WALKING:
+    default:
+        // Flip direction when we hit a wall last frame, otherwise keep going
+        if (mIsCollidingLeft) {
+            moveRight();
+        } else if (mIsCollidingRight) {
+            moveLeft();
+        } else {
+            if (mDirection == LEFT) moveLeft();
+            else                    moveRight();
+        }
+        break;
+    }
+}
 
 void Entity::AIFollow(Entity *target)
 {
@@ -217,7 +240,10 @@ void Entity::AIFollow(Entity *target)
         // Depending on where the player is in respect to their x-position
         // Change direction of the enemy
         if (mPosition.x > target->getPosition().x) moveLeft();
-        else                                       moveRight();
+        else                            moveRight();
+    case FOLLOWING:
+        mPosition.x = lerp(mPosition.x,target->getPosition().x,0.001f);
+        mPosition.y = lerp(mPosition.y,target->getPosition().y,0.005f);
     
     default:
         break;
@@ -272,9 +298,23 @@ void Entity::update(float deltaTime, Entity *player, Map *map,
     mPosition.x += mVelocity.x * deltaTime;
     checkCollisionX(collidableEntities, collisionCheckCount);
     checkCollisionX(map);
-
-    if (mTextureType == ATLAS && GetLength(mMovement) != 0 && mIsCollidingBottom) 
+    
+    if (mTextureType == ATLAS && GetLength(mMovement) != 0 && (mEntityType == NPC || mIsCollidingBottom)) 
         animate(deltaTime);
+    if (mEntityType == NPC && isColliding(player)){
+        player->lose_life();   
+        player->setPosition(player->get_inital_pos());
+        this->setPosition(this->get_inital_pos());
+        this->setAIState(IDLE);
+    }
+    if(mEntityType == KEY && isColliding(player)){
+        player->add_key();
+        this->deactivate();
+    } 
+    if(mEntityType == DOOR && isColliding(player) && player->get_key()){
+        this->deactivate();
+    }
+
 }
 
 void Entity::render()
@@ -282,6 +322,7 @@ void Entity::render()
     if(mEntityStatus == INACTIVE) return;
 
     Rectangle textureArea;
+    Rectangle heartArea;
 
     switch (mTextureType)
     {
@@ -327,8 +368,70 @@ void Entity::render()
         textureArea, destinationArea, originOffset,
         mAngle, WHITE
     );
+    if(mEntityType == PLAYER){
+        if (mLives ==3){
+        Rectangle threeArea= {
+            100,150,50,50
+        };
+        heartArea = {
+                // top-left corner
+                0.0f, 0.0f,
 
-    // displayCollider();
+                // bottom-right corner (of texture)
+                static_cast<float>(mHeart.width),
+                static_cast<float>(mHeart.height)
+            };
+        DrawTexturePro(
+            mHeart,
+            heartArea, 
+            threeArea,
+            originOffset,
+            mAngle, WHITE
+        );
+    }
+        if (mLives >=2){
+        Rectangle twoArea= {
+            150,150,50,50
+        };
+        heartArea = {
+                // top-left corner
+                0.0f, 0.0f,
+
+                // bottom-right corner (of texture)
+                static_cast<float>(mHeart.width),
+                static_cast<float>(mHeart.height)
+            };
+        DrawTexturePro(
+            mHeart,
+            heartArea, 
+            twoArea,
+            originOffset,
+            mAngle, WHITE
+        );
+    }
+    if (mLives >=1){
+        Rectangle oneArea= {
+            200,150,50,50
+        };
+        heartArea = {
+                // top-left corner
+                0.0f, 0.0f,
+
+                // bottom-right corner (of texture)
+                static_cast<float>(mHeart.width),
+                static_cast<float>(mHeart.height)
+            };
+        DrawTexturePro(
+            mHeart,
+            heartArea, 
+            oneArea,
+            originOffset,
+            mAngle, WHITE
+        );
+    }
+    }
+
+     displayCollider();
 }
 
 void Entity::displayCollider() 

@@ -5,10 +5,9 @@
 
 enum Direction    { LEFT, UP, RIGHT, DOWN              }; // For walking
 enum EntityStatus { ACTIVE, INACTIVE                   };
-enum EntityType   { PLAYER, BLOCK, PLATFORM, NPC, NONE };
+enum EntityType   { PLAYER, BLOCK, PLATFORM, NPC, KEY,DOOR,NONE };
 enum AIType       { WANDERER, FOLLOWER                 };
 enum AIState      { WALKING, IDLE, FOLLOWING           };
-
 class Entity
 {
 private:
@@ -38,16 +37,23 @@ private:
     int mSpeed;
     float mAngle;
 
+    int mLives = 3;
+    bool key_obtained=false;
+    
     bool mIsCollidingTop    = false;
     bool mIsCollidingBottom = false;
     bool mIsCollidingRight  = false;
     bool mIsCollidingLeft   = false;
+    
+    Vector2 spawn_in_position;
 
     EntityStatus mEntityStatus = ACTIVE;
     EntityType   mEntityType;
 
     AIType  mAIType;
     AIState mAIState;
+
+    Texture2D mHeart = LoadTexture("assets/tile_0132.png");
 
     bool isColliding(Entity *other) const;
 
@@ -122,6 +128,7 @@ public:
     EntityType  getEntityType()            const { return mEntityType;            }
     AIType      getAIType()                const { return mAIType;                }
     AIState     getAIState()               const { return mAIState;               }
+    EntityStatus     getActive()           const { return  mEntityStatus;               }
 
     
     bool isCollidingTop()    const { return mIsCollidingTop;    }
@@ -163,6 +170,24 @@ public:
         { mAIState = newState;                     }
     void setAIType(AIType newType)
         { mAIType = newType;                       }
+    void lose_life(){
+        mLives -=1;
+    }
+    void add_key(){
+        key_obtained = true;
+    }
+    void remove_key(){
+        key_obtained = false;
+    }
+    bool get_key(){
+        return key_obtained;
+    }
+    Vector2 get_inital_pos(){
+        return spawn_in_position;
+    }
+    float lerp(float start, float end, float t) {
+        return start + t * (end - start);
+    }
 };
 
 #endif // ENTITY_CPP

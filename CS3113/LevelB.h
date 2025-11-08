@@ -1,30 +1,30 @@
 #include "Scene.h"
 
-constexpr int LEVEL_WIDTH = 16,
-              LEVEL_HEIGHT = 8;
-class LevelA : public Scene {
+constexpr int LEVEL_WIDTH2 = 16,
+              LEVEL_HEIGHT2 = 8;
+class LevelB : public Scene {
 private:
-    unsigned int mLevelData[LEVEL_WIDTH * LEVEL_HEIGHT] = {
+    unsigned int mLevelData[LEVEL_WIDTH2 * LEVEL_HEIGHT2] = {
         0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
         0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+        0,4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
+        2,4, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,4,
         0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
-        0,4, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0,4,
-        0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0,4,
-        0,4, 0, 2, 2, 13, 0, 0, 2, 2, 0, 0, 3, 3, 0,4,
+        0,4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,4,
         0,4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,4,
-        0,4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 110,4,
+        0,4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,4,
     };
 
 public:
     static constexpr float TILE_DIMENSION       = 75.0f,
                         ACCELERATION_OF_GRAVITY = 981.0f,
                         END_GAME_THRESHOLD      = 800.0f;
-    Entity * flying_enemy;
+    Entity * ground_enemy;
     Entity * key;
     Entity * door;
-    LevelA();
-    LevelA(Vector2 origin, const char *bgHexCode);
-    ~LevelA();
+    LevelB();
+    LevelB(Vector2 origin, const char *bgHexCode);
+    ~LevelB();
     
     void initialise() override;
     void update(float deltaTime) override;

@@ -1,11 +1,11 @@
-#include "LevelA.h"
+#include "LevelB.h"
 
-LevelA::LevelA()                                      : Scene { {0.0f}, nullptr   } {}
-LevelA::LevelA(Vector2 origin, const char *bgHexCode) : Scene { origin, bgHexCode } {}
+LevelB::LevelB()                                      : Scene { {0.0f}, nullptr   } {}
+LevelB::LevelB(Vector2 origin, const char *bgHexCode) : Scene { origin, bgHexCode } {}
 
-LevelA::~LevelA() { shutdown(); }
+LevelB::~LevelB() { shutdown(); }
 
-void LevelA::initialise()
+void LevelB::initialise()
 {
    mGameState.nextSceneID = 0;
 
@@ -19,7 +19,7 @@ void LevelA::initialise()
       ----------- MAP -----------
    */
    mGameState.map = new Map(
-      LEVEL_WIDTH, LEVEL_HEIGHT,   // map grid cols & rows
+      LEVEL_WIDTH2, LEVEL_HEIGHT2,   // map grid cols & rows
       (unsigned int *) mLevelData, // grid data
       "assets/tilemap_packed.png",   // texture filepath
       TILE_DIMENSION,              // tile size
@@ -54,10 +54,10 @@ void LevelA::initialise()
       PLAYER                                    // entity type
    );
 
-   flying_enemy =  new Entity(
+   ground_enemy =  new Entity(
       {mOrigin.x + 300.0f, mOrigin.y - 200.0f}, // position
       {50.0f , 50.0f*sizeRatio},             // scale
-      "assets/4 Vulture/Vulture_walk.png",                   // texture file address
+      "assets/3 Scorpio/Scorpio_walk.png",                   // texture file address
       ATLAS,                                    // single image or atlas?
       {1, 4},                                 // atlas dimensions
       vultureAnimationAtlas,                    // actual atlas
@@ -77,8 +77,8 @@ void LevelA::initialise()
       DOOR  
    );
    
-   flying_enemy->setAIType(FOLLOWER);
-   flying_enemy->setAIState(IDLE); 
+   ground_enemy->setAIType(WANDERER);
+   ground_enemy->setAIState(IDLE); 
 
    mGameState.hero->setJumpingPower(550.0f);
    mGameState.hero->setColliderDimensions({
@@ -97,7 +97,7 @@ void LevelA::initialise()
    mGameState.camera.zoom = 1.0f;                                // default zoom
 }
 
-void LevelA::update(float deltaTime)
+void LevelB::update(float deltaTime)
 {
    UpdateMusicStream(mGameState.bgm);
 
@@ -108,7 +108,7 @@ void LevelA::update(float deltaTime)
       nullptr,        // collidable entities
       0               // col. entity count
    );
-   flying_enemy->update(
+   ground_enemy->update(
       deltaTime,
       mGameState.hero,
       mGameState.map,
@@ -129,7 +129,7 @@ void LevelA::update(float deltaTime)
     0);   
    if (door->getActive()==INACTIVE &&mGameState.hero->get_key()){
       mGameState.hero->remove_key();
-      mGameState.nextSceneID = 2;
+      mGameState.nextSceneID = 1;
    } 
 
    
@@ -142,18 +142,18 @@ void LevelA::update(float deltaTime)
    panCamera(&mGameState.camera, &currentPlayerPosition);
 }
 
-void LevelA::render()
+void LevelB::render()
 {
    ClearBackground(ColorFromHex(mBGColourHexCode));
 
    mGameState.map->render();
    mGameState.hero->render();
-   flying_enemy->render();
+   ground_enemy->render();
    key->render();
    door->render();
 }
 
-void LevelA::shutdown()
+void LevelB::shutdown()
 {
    delete mGameState.hero;
    delete mGameState.map;
