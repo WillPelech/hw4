@@ -33,15 +33,13 @@ void start_screen::render()
    ClearBackground(ColorFromHex(mBGColourHexCode));
    int titleSize = 50;
    const char* title = "Escape the Desert";
-   int titleWidth = MeasureText(title, titleSize);
-   int titleX = static_cast<int>(mOrigin.x - titleWidth / 2);
-   int titleY = static_cast<int>(mOrigin.y) - 120;
+   int titleX = 50;
+   int titleY = 80;
    DrawText(title, titleX, titleY, titleSize, BLACK);
 
    int fontSize = 32;
-   int textWidth = MeasureText(start_text.c_str(), fontSize);
-   int x = static_cast<int>(mOrigin.x - textWidth / 2);
-   int y = titleY + titleSize + 24;
+   int x = 50;
+   int y = titleY + titleSize + 30;
    DrawText(start_text.c_str(), x, y, fontSize, BLACK);
 }
 
